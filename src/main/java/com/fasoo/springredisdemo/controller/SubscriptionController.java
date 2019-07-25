@@ -1,7 +1,7 @@
 package com.fasoo.springredisdemo.controller;
 
-import com.fasoo.springredisdemo.domain.Subscription;
-import com.fasoo.springredisdemo.dto.SubscriptionDto;
+import com.fasoo.springredisdemo.dto.RequestSubscriptionDto;
+import com.fasoo.springredisdemo.dto.ResponseSubScriptionDto;
 import com.fasoo.springredisdemo.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +14,15 @@ public class SubscriptionController {
   SubscriptionService subscriptionService;
 
   @PostMapping("/{postId}")
-  public Subscription subscribe (@PathVariable (name = "postId") Long postId,
-                                 SubscriptionDto subscriptionDto) {
+  public ResponseSubScriptionDto subscribe (@PathVariable (name = "postId") Long postId,
+                                            @RequestBody RequestSubscriptionDto requestSubscriptionDto) {
 
-    return subscriptionService.subscribe(subscriptionDto);
+    return subscriptionService.subscribe(requestSubscriptionDto).toResponseDto();
   }
 
-  @DeleteMapping("/{postId}")
-  public void unsubscribe (@PathVariable (name = "postId") Long postId) {
+  @DeleteMapping("/{id}")
+  public void unsubscribe (@PathVariable (name = "id") Long id) {
 
-    subscriptionService.unsubscribe(postId);
+    subscriptionService.unsubscribe(id);
   }
 }
