@@ -1,5 +1,6 @@
 package com.fasoo.springredisdemo.domain;
 
+import com.fasoo.springredisdemo.dto.ResponseSubScriptionDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
@@ -10,8 +11,8 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Getter
-@RedisHash("Subscription")
-public class Subscription implements Serializable {
+@RedisHash("SubscriptionDomain")
+public class SubscriptionDomain implements Serializable {
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -19,11 +20,19 @@ public class Subscription implements Serializable {
 
   private String userId;
 
-  private int postId;
+  private Long postId;
 
   @Builder
-  public Subscription(String userId, int postId) {
+  public SubscriptionDomain(String userId, Long postId) {
     this.userId = userId;
     this.postId = postId;
+  }
+
+  public ResponseSubScriptionDto toResponseDto() {
+    return ResponseSubScriptionDto.builder()
+      .id(id)
+      .userId(userId)
+      .postId(postId)
+      .build();
   }
 }
