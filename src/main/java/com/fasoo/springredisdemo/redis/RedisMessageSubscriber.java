@@ -13,11 +13,10 @@ public class RedisMessageSubscriber implements MessageListener {
   public static CountDownLatch countDownLatch = new CountDownLatch(1);
 
   public void onMessage(Message message, byte[] pattern) {
-    messageList.add(new String(message.getBody()));
-    System.out.println("Message received : \n" +
-      "message => " + new String(message.getBody()) + "\n" +
-      "channel => " + new String(message.getChannel()) + "\n" +
-      "pattern => " + new String(pattern));
+    System.out.println("Message received : " + message.toString());
+    String msg = message.toString().replaceAll("[^0-9]", "");
+    messageList.add(msg);
+    System.out.println("게시글(" + msg + ")에서 이벤트 발생");
     countDownLatch.countDown();
   }
 }
