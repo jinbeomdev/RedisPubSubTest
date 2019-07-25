@@ -1,20 +1,25 @@
 package com.fasoo.springredisdemo.service;
 
-import com.fasoo.springredisdemo.domain.Subscription;
-import com.fasoo.springredisdemo.dto.SubscriptionDto;
+import com.fasoo.springredisdemo.domain.SubscriptionDomain;
+import com.fasoo.springredisdemo.dto.RequestSubscriptionDto;
 import com.fasoo.springredisdemo.repository.SubscriptionRedisRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SubscriptionService {
 
+  @Autowired
   SubscriptionRedisRepository subscriptionRedisRepository;
 
-  public Subscription subscribe(SubscriptionDto subscriptionDto) {
-    return subscriptionRedisRepository.save(subscriptionDto.getSubscription());
+  public SubscriptionDomain subscribe(RequestSubscriptionDto requestSubscriptionDto) {
+    return subscriptionRedisRepository.save(requestSubscriptionDto.toSubscriptionDomain());
   }
 
-  public void unsubscribe(Long subscriptionId) {
-    subscriptionRedisRepository.deleteById(subscriptionId);
+  public void unsubscribe(Long id) {
+    SubscriptionDomain subscriptionDomain =
+      subscriptionRedisRepository.findById(id).get();
+
+    subscriptionRedisRepository.delete(subscriptionDomain);
   }
 }
