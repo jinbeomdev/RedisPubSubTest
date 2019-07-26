@@ -1,5 +1,6 @@
 package com.fasoo.springredisdemo.redis;
 
+import com.fasoo.springredisdemo.repository.SubscriptionRedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,9 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 public class RedisPubSubConfig {
 
   @Autowired
+  SubscriptionRedisRepository subscriptionRedisRepository;
+
+  @Autowired
   RedisConnectionFactory redisConnectionFactory;
 
   @Autowired
@@ -26,14 +30,14 @@ public class RedisPubSubConfig {
 
   @Bean
   public RedisMessageSubscriber redisMessageSubscriber() {
-    return new RedisMessageSubscriber(redisTemplate);
+    return new RedisMessageSubscriber(redisTemplate, subscriptionRedisRepository);
   }
 
 
   @Bean
   MessageListenerAdapter messageListener() {
     MessageListenerAdapter messageListenerAdapter =
-      new MessageListenerAdapter(new RedisMessageSubscriber(redisTemplate));
+      new MessageListenerAdapter(redisMessageSubscriber());
     messageListenerAdapter.setSerializer(new GenericJackson2JsonRedisSerializer());
     return messageListenerAdapter;
   }

@@ -2,8 +2,10 @@ package com.fasoo.springredisdemo.domain;
 
 import com.fasoo.springredisdemo.dto.ResponseSubScriptionDto;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,8 +20,10 @@ public class SubscriptionDomain implements Serializable {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Indexed
   private String userId;
 
+  @Indexed
   private Long postId;
 
   @Builder
