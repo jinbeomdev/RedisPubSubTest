@@ -1,5 +1,5 @@
 package com.fasoo.springredisdemo.redis;
 
-public interface MessagePublisher {
-  void publish(Object object);
+public interface MessagePublisher<V> {
+  void publish(V message);
 }

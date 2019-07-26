@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 @Configuration
 public class RedisPubSubConfig {
@@ -16,7 +17,7 @@ public class RedisPubSubConfig {
   RedisConnectionFactory redisConnectionFactory;
 
   @Autowired
-  private RedisTemplate<String, Object> redisTemplate;
+  private RedisTemplate<String, ?> redisTemplate;
 
   @Bean
   public MessagePublisher messagePublisher() {
@@ -25,13 +26,16 @@ public class RedisPubSubConfig {
 
   @Bean
   public RedisMessageSubscriber redisMessageSubscriber() {
-    return new RedisMessageSubscriber();
+    return new RedisMessageSubscriber(redisTemplate);
   }
 
 
   @Bean
   MessageListenerAdapter messageListener() {
-    return new MessageListenerAdapter(new RedisMessageSubscriber());
+    MessageListenerAdapter messageListenerAdapter =
+      new MessageListenerAdapter(new RedisMessageSubscriber(redisTemplate));
+    messageListenerAdapter.setSerializer(new GenericJackson2JsonRedisSerializer());
+    return messageListenerAdapter;
   }
 
   @Bean
